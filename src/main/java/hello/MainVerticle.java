@@ -4,7 +4,7 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.http.HttpServer;
 
-public class HelloVerticle extends AbstractVerticle {
+public class MainVerticle extends AbstractVerticle {
 
     private HttpServer httpServer;
 
@@ -19,11 +19,21 @@ public class HelloVerticle extends AbstractVerticle {
                     .putHeader("Content-Type", "text/html; charset=utf-8")
                     .end("Hello from Vert.X!");
         });
-        httpServer.listen(8080, res -> fut.complete());
+        httpServer.listen(8080, handler -> {
+            if (handler.succeeded()) {
+                System.out.println("Server started on http://localhost:8080/");
+            } else {
+                System.err.println("Server failed to start on port 8080. Is it in use?");
+            }
+            fut.complete();
+        });
     }
 
     @Override
     public void stop(Future fut) {
-        httpServer.close(res -> fut.complete());
+        httpServer.close(handler -> {
+            System.out.println("Server stopped.");
+            fut.complete();
+        });
     }
 }
