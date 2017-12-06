@@ -1,6 +1,6 @@
 # Vert.x Starter
 
-A demo Java application using Eclipse Vert.x
+A simple Java webapp using Eclipse Vert.x
 
 ## Prerequisites
 
