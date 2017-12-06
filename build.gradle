@@ -1,0 +1,35 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "com.github.jengelman.gradle.plugins:shadow:2.0.0"
+  }
+}
+
+apply plugin: "com.github.johnrengelman.plugin-shadow"
+
+group 'com.amdelamar'
+version = '0.1.0'
+jar.baseName = 'vertx-starter'
+mainClassName = 'hello.VertX'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'io.vertx:vertx-core:3.5.+'
+   
+    compile 'org.slf4j:slf4j-api:1.7.+'
+    compile 'org.slf4j:slf4j-simple:1.7.+'
+
+    testCompile 'junit:junit:4.12'
+}
