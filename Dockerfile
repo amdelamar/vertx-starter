@@ -11,4 +11,4 @@ WORKDIR /usr/vertx-starter
 EXPOSE 8080 8443
 
 # Start java application
-CMD ["java","-jar","spark-starter-0.1.0-fat.jar"]
+CMD ["java","-jar","vertx-starter-0.1.0-fat.jar"]
