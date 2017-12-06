@@ -2,23 +2,28 @@ package hello;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import io.vertx.core.Vertx;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
+import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 
 @RunWith(VertxUnitRunner.class)
-public class MainVerticleTest {
-
+public class VertxServerTest {
+    
+    @Rule
+    public RunTestOnContext rule = new RunTestOnContext();
+    
     private Vertx vertx;
 
     @Before
     public void setUp(TestContext tc) {
-        vertx = Vertx.vertx();
-        vertx.deployVerticle(MainVerticle.class.getName(), tc.asyncAssertSuccess());
+        vertx = rule.vertx();
+        //vertx.deployVerticle(MainVerticle.class.getName(), tc.asyncAssertSuccess());
     }
 
     @After
@@ -26,7 +31,7 @@ public class MainVerticleTest {
         vertx.close(tc.asyncAssertSuccess());
     }
 
-    @Test
+    @Test(timeout = 3000l)
     public void testThatTheServerIsStarted(TestContext tc) {
         Async async = tc.async();
         vertx.createHttpClient()

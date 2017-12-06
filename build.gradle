@@ -4,20 +4,21 @@ apply plugin: 'application'
 buildscript {
   repositories {
     maven {
-      url 'https://plugins.gradle.org/m2/'
+      url "https://plugins.gradle.org/m2/"
     }
   }
   dependencies {
-    classpath 'gradle.plugin.io.vertx:vertx-gradle-plugin:0.0.6'
+    classpath "com.github.jengelman.gradle.plugins:shadow:2.0.1"
   }
 }
 
-apply plugin: 'io.vertx.vertx-plugin'
+apply plugin: "com.github.johnrengelman.shadow"
 
 group 'com.amdelamar'
 version = '0.1.0'
 jar.baseName = 'vertx-starter'
 jar.enabled = false
+mainClassName = 'hello.VertxServer'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -27,6 +28,7 @@ repositories {
 
 dependencies {
     compile 'io.vertx:vertx-core:3.5.+'
+    compile 'io.vertx:vertx-web:3.5.+'
    
     compile 'org.slf4j:slf4j-api:1.7.+'
     compile 'org.slf4j:slf4j-simple:1.7.+'
@@ -35,8 +37,6 @@ dependencies {
     testCompile 'io.vertx:vertx-unit:3.5.+'
 }
 
-vertx {
-  mainVerticle = 'hello.MainVerticle'
-  watch = ['src/**/*', 'build.gradle']
-  onRedeploy = ['classes']
+shadowJar {
+    classifier = null
 }
