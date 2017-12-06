@@ -17,7 +17,7 @@ apply plugin: "com.github.johnrengelman.plugin-shadow"
 group 'com.amdelamar'
 version = '0.1.0'
 jar.baseName = 'vertx-starter'
-mainClassName = 'hello.VertX'
+mainClassName = 'io.vertx.core.Launcher'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -32,4 +32,5 @@ dependencies {
     compile 'org.slf4j:slf4j-simple:1.7.+'
 
     testCompile 'junit:junit:4.12'
+    testCompile 'io.vertx:vertx-unit:3.5.+'
 }
