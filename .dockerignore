@@ -1,0 +1,17 @@
+# ignore these folders
+.git
+.cache
+.settings
+src
+bin
+
+# ignore these files
+.project
+.classpath
+
+# ignore all *.class files in all folders, including build root
+*.class
+
+# ignore all markdown files (md) besides README.md
+*.md
+!README.md

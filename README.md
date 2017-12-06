@@ -25,14 +25,12 @@ App can be run in redeploy mode, so any changes to files are recompiled quickly.
 
 This last command launches the application and redeploys as soon as you change something in `src/`.
 
-<!--
 ## Run in Docker
 
 1. Run build `./gradlew clean build`
 1. Build image `docker build -t vertx-starter .`
 1. Run container `docker run -p 8080:8080 vertx-starter`
 1. Visit [http://localhost:8080/](http://localhost:8080/) to see the app running.
--->
 
 ## License
 
