@@ -66,9 +66,10 @@ public class MainVerticle extends AbstractVerticle {
                         .setCachingEnabled(!true));
         // Readonly + nocache, so any changes in webroot are visible on browser refresh
         // for production, these wouldn't be needed.
-        
+
         // Templating
-        mainRouter.route().path("/template")
+        mainRouter.route()
+                .path("/template")
                 .handler(new TemplateHandler());
 
         // Add Subrouter api
