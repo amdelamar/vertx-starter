@@ -13,4 +13,4 @@ EXPOSE 8080 8443
 # Launch the verticle
 WORKDIR $VERTICLE_HOME
 ENTRYPOINT ["sh","-c"]
-CMD ["exec","java","-jar","$VERTICLE_FILE"]
+CMD ["exec java -jar $VERTICLE_FILE"]
