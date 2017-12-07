@@ -1,14 +1,16 @@
 FROM openjdk:8-jre-alpine
 
-# Copy app to new directory
-RUN mkdir -p /usr/vertx-starter
-COPY build/libs/vertx-starter-0.1.0.jar /usr/vertx-starter
+ENV VERTICLE_FILE vertx-starter-0.1.0.jar
+ENV VERTICLE_HOME /usr/verticles
 
-# Work out of the directory
-WORKDIR /usr/vertx-starter
+# Copy App and resources
+COPY build/libs/$VERTICLE_FILE $VERTICLE_HOME/
+COPY webroot $VERTICLE_HOME/webroot/
+COPY deploy $VERTICLE_HOME/deploy/
 
-# Expose http ports
 EXPOSE 8080 8443
 
-# Start java application
-CMD ["java","-jar","vertx-starter-0.1.0.jar"]
+# Launch the verticle
+WORKDIR $VERTICLE_HOME
+ENTRYPOINT ["sh","-c"]
+CMD ["exec","java","-jar","$VERTICLE_FILE"]

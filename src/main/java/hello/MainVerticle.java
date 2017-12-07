@@ -1,11 +1,12 @@
 package hello;
 
+import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
-import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
@@ -18,6 +19,8 @@ public class MainVerticle extends AbstractVerticle {
     public static final int HTTPPORT = 8080;
     public static final int HTTPSPORT = 8443;
     public static final String VERSION = "3.5.0";
+    public static final String KEYSTORE = "/deploy/keystore.jks";
+    public static final String KEYSTORE_PASSWORD = "changeit";
 
     private static Vertx vertx;
     private static HttpServer httpServer;
@@ -28,11 +31,8 @@ public class MainVerticle extends AbstractVerticle {
         // Vertx core
         vertx = Vertx.vertx();
 
-        // Verticle
-        Verticle app = new MainVerticle();
-
         // Deploy Verticle
-        vertx.deployVerticle(app, res -> {
+        vertx.deployVerticle(new MainVerticle(), res -> {
             if (!res.succeeded()) {
                 logger.error("FATAL: Deploy Verticle failed!");
             }
@@ -43,6 +43,12 @@ public class MainVerticle extends AbstractVerticle {
     public void start(Future<Void> startFuture) throws Exception {
         super.start(startFuture);
 
+        // Check if necessary files are valid
+        if (!isValid()) {
+            getVertx().close();
+            System.exit(1);
+        }
+
         // Create HTTP server
         httpServer = getVertx().createHttpServer(new HttpServerOptions().setLogActivity(true));
 
@@ -50,8 +56,8 @@ public class MainVerticle extends AbstractVerticle {
         httpsServer = getVertx().createHttpServer(new HttpServerOptions().setLogActivity(true)
                 //.setUseAlpn(true) // HTTP/2 not supported on this JDK
                 .setSsl(true)
-                .setKeyStoreOptions(new JksOptions().setPassword("changeit")
-                        .setPath(System.getProperty("user.dir") + "/deploy/keystore.jks")));
+                .setKeyStoreOptions(new JksOptions().setPassword(KEYSTORE_PASSWORD)
+                        .setPath(System.getProperty("user.dir") + KEYSTORE)));
 
         // Map Routes
         Router mainRouter = Router.router(getVertx());
@@ -75,7 +81,7 @@ public class MainVerticle extends AbstractVerticle {
         // Add Subrouter api
         Router apiRouter = Router.router(getVertx());
         apiRouter.route()
-                .path("/api/*")
+                .path("/")
                 .handler(new ApiHandler());
         mainRouter.mountSubRouter("/api", apiRouter);
 
@@ -100,6 +106,33 @@ public class MainVerticle extends AbstractVerticle {
                 logger.error("Failed to bind on port " + HTTPSPORT + ". Is it being used?");
             }
         });
+    }
+
+    /**
+     * Check if this application has access to the necessary files
+     * and resources it needs. Like keystore and webroot.
+     * @return true if valid
+     */
+    public boolean isValid() {
+        boolean flag = true;
+        String dir = System.getProperty("user.dir");
+
+        // SSL Keystore check
+        File keystore = new File(dir + KEYSTORE);
+        if (!keystore.exists() || !keystore.canRead()) {
+            logger.error("Keystore file not found or can't read.");
+            logger.error("Expected it here: " + dir);
+            flag = false;
+        }
+
+        File webroot = new File(dir + "/webroot");
+        if (!webroot.exists() || !webroot.isDirectory()) {
+            logger.error("/webroot/ not found or can't read files.");
+            logger.error("Expected it here: " + dir);
+            flag = false;
+        }
+
+        return flag;
     }
 
     @Override
