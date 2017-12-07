@@ -13,7 +13,7 @@ import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 
 @RunWith(VertxUnitRunner.class)
-public class VertxServerTest {
+public class MainVerticleTest {
     
     @Rule
     public RunTestOnContext rule = new RunTestOnContext();
@@ -21,26 +21,24 @@ public class VertxServerTest {
     private Vertx vertx;
 
     @Before
-    public void setUp(TestContext tc) {
+    public void setUp(TestContext test) {
         vertx = rule.vertx();
-        //vertx.deployVerticle(MainVerticle.class.getName(), tc.asyncAssertSuccess());
+        vertx.deployVerticle(MainVerticle.class.getName(), test.asyncAssertSuccess());
     }
 
     @After
-    public void tearDown(TestContext tc) {
-        vertx.close(tc.asyncAssertSuccess());
+    public void tearDown(TestContext test) {
+        vertx.close(test.asyncAssertSuccess());
     }
 
-    @Test(timeout = 3000l)
-    public void testThatTheServerIsStarted(TestContext tc) {
-        Async async = tc.async();
+    @Test(timeout = 1000l)
+    public void testRedirect(TestContext test) {
+        Async async = test.async();
         vertx.createHttpClient()
                 .getNow(8080, "localhost", "/", response -> {
-                    tc.assertEquals(response.statusCode(), 200);
-                    response.bodyHandler(body -> {
-                        tc.assertTrue(body.length() > 0);
-                        async.complete();
-                    });
+                    test.assertEquals(response.statusCode(), 302);
+                    test.assertNotNull(response.getHeader("Location"));
+                    async.complete();
                 });
     }
 
