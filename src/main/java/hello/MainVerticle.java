@@ -11,6 +11,7 @@ import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.net.JksOptions;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.StaticHandler;
 
 public class MainVerticle extends AbstractVerticle {
 
@@ -26,10 +27,10 @@ public class MainVerticle extends AbstractVerticle {
     public static void main(String[] args) {
         // Vertx core
         vertx = Vertx.vertx();
-    
+
         // Verticle
         Verticle app = new MainVerticle();
-    
+
         // Deploy Verticle
         vertx.deployVerticle(app, res -> {
             if (!res.succeeded()) {
@@ -53,19 +54,22 @@ public class MainVerticle extends AbstractVerticle {
                         .setPath(System.getProperty("user.dir") + "/deploy/keystore.jks")));
 
         // Map Routes
-        Router router = Router.router(getVertx());
-        router.route()
-                .path("/")
-                .handler(new HelloHandler());
-        router.route()
+        Router mainRouter = Router.router(getVertx());
+        mainRouter.route()
                 .path("/hello")
                 .handler(new HelloHandler());
-        router.route()
+        // Handle static resources
+        mainRouter.route("/*").handler(StaticHandler.create());
+
+        // Subrouter API
+        Router apiRouter = Router.router(getVertx());
+        apiRouter.route()
                 .path("/api/*")
                 .handler(new ApiHandler());
+        mainRouter.mountSubRouter("/api", apiRouter);
 
         // Add Route Handler
-        httpsServer.requestHandler(router::accept);
+        httpsServer.requestHandler(mainRouter::accept);
 
         // Redirect HTTP requests to HTTPS
         httpServer.requestHandler(new RedirectHandler());
@@ -90,6 +94,6 @@ public class MainVerticle extends AbstractVerticle {
     @Override
     public void stop(Future<Void> stopFuture) throws Exception {
         super.stop(stopFuture);
-        logger.info("Stopped listening on ports: "+HTTPPORT+"/"+HTTPSPORT);
+        logger.info("Stopped listening on ports: " + HTTPPORT + "/" + HTTPSPORT);
     }
 }
