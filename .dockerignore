@@ -2,6 +2,7 @@
 .git
 .cache
 .settings
+.vertx
 src
 bin
 
