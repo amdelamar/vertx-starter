@@ -18,7 +18,6 @@ group 'com.amdelamar'
 version = '0.1.0'
 jar.baseName = 'vertx-starter'
 jar.enabled = false
-mainClassName = 'hello.MainVerticle'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -37,6 +36,22 @@ dependencies {
     testCompile 'io.vertx:vertx-unit:3.5.+'
 }
 
+mainClassName = 'hello.MainVerticle'
+def mainVerticleName = 'hello.MainVerticle'
+def watchForChange = 'src/**/*'
+def doOnChange = './gradlew classes'
+if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+  doOnChange = '.\\gradlew classes'
+}
+
+// Vertx redeploy
+run {
+  args = ['run', mainVerticleName, "--redeploy=$watchForChange", "--launcher-class=$mainClassName", "--on-redeploy=$doOnChange"]
+}
+
 shadowJar {
     classifier = null
+    manifest {
+      attributes "Main-Verticle": mainVerticleName
+    }
 }

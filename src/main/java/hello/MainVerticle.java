@@ -58,17 +58,23 @@ public class MainVerticle extends AbstractVerticle {
         mainRouter.route()
                 .path("/hello")
                 .handler(new HelloHandler());
-        // Handle static resources
-        mainRouter.route("/*").handler(StaticHandler.create());
 
-        // Subrouter API
+        // Webroot resources
+        mainRouter.route("/*")
+                .handler(StaticHandler.create()
+                        .setFilesReadOnly(false)
+                        .setCachingEnabled(!true));
+        // Readonly + nocache, so any changes in webroot are visible on browser refresh
+        // for production, these wouldn't be needed.
+
+        // Add Subrouter api
         Router apiRouter = Router.router(getVertx());
         apiRouter.route()
                 .path("/api/*")
                 .handler(new ApiHandler());
         mainRouter.mountSubRouter("/api", apiRouter);
 
-        // Add Route Handler
+        // Set Router
         httpsServer.requestHandler(mainRouter::accept);
 
         // Redirect HTTP requests to HTTPS
