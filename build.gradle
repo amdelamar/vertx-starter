@@ -14,12 +14,13 @@ buildscript {
 
 apply plugin: "com.github.johnrengelman.shadow"
 
-group 'com.amdelamar'
+group = 'com.amdelamar'
 version = '0.1.0'
 jar.baseName = 'vertx-starter'
 jar.enabled = false
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+compileJava.options.encoding = 'UTF-8'
 
 repositories {
     mavenCentral()
@@ -42,17 +43,17 @@ def mainVerticleName = 'hello.MainVerticle'
 def watchForChange = 'src/**/*'
 def doOnChange = './gradlew classes'
 if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-  doOnChange = '.\\gradlew classes'
+    doOnChange = '.\\gradlew classes'
 }
 
 // Vertx redeploy
 run {
-  args = ['run', mainVerticleName, "--redeploy=$watchForChange", "--launcher-class=$mainClassName", "--on-redeploy=$doOnChange"]
+    args = ['run', mainVerticleName, "--redeploy=$watchForChange", "--launcher-class=$mainClassName", "--on-redeploy=$doOnChange"]
 }
 
 shadowJar {
     classifier = null
     manifest {
-      attributes "Main-Verticle": mainVerticleName
+        attributes "Main-Verticle": mainVerticleName
     }
 }
