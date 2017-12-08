@@ -1,4 +1,4 @@
-FROM openjdk:8-jre-alpine
+FROM openjdk:9-jre-slim
 
 ENV VERTICLE_FILE vertx-starter-0.1.0.jar
 ENV VERTICLE_HOME /usr/verticles
