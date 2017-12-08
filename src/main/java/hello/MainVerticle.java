@@ -54,7 +54,7 @@ public class MainVerticle extends AbstractVerticle {
 
         // Create HTTPS server
         httpsServer = getVertx().createHttpServer(new HttpServerOptions().setLogActivity(true)
-                //.setUseAlpn(true) // HTTP/2 not supported on this JDK
+                .setUseAlpn(true) // HTTP/2 only supported on JDK 9
                 .setSsl(true)
                 .setKeyStoreOptions(new JksOptions().setPassword(KEYSTORE_PASSWORD)
                         .setPath(System.getProperty("user.dir") + KEYSTORE)));
@@ -120,15 +120,13 @@ public class MainVerticle extends AbstractVerticle {
         // SSL Keystore check
         File keystore = new File(dir + KEYSTORE);
         if (!keystore.exists() || !keystore.canRead()) {
-            logger.error("Keystore file not found or can't read.");
-            logger.error("Expected it here: " + dir);
+            logger.error("Keystore file not found or can't read. Expected it here: " + keystore.getAbsolutePath());
             flag = false;
         }
 
         File webroot = new File(dir + "/webroot");
         if (!webroot.exists() || !webroot.isDirectory()) {
-            logger.error("/webroot/ not found or can't read files.");
-            logger.error("Expected it here: " + dir);
+            logger.error("/webroot/ not found or can't read. Expected it here: " + dir);
             flag = false;
         }
 
