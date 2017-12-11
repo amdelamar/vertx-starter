@@ -44,7 +44,7 @@ public class MainVerticle extends AbstractVerticle {
         super.start(startFuture);
 
         // Check if necessary files are valid
-        if (!isValid()) {
+        if(isValid().failed()) {
             getVertx().close();
             System.exit(1);
         }
@@ -61,7 +61,7 @@ public class MainVerticle extends AbstractVerticle {
 
         // Map Routes
         Router mainRouter = Router.router(getVertx());
-        mainRouter.route()
+        mainRouter.get()
                 .path("/hello")
                 .handler(new HelloHandler());
 
@@ -74,13 +74,13 @@ public class MainVerticle extends AbstractVerticle {
         // for production, these wouldn't be needed.
 
         // Templating
-        mainRouter.route()
+        mainRouter.get()
                 .path("/template")
                 .handler(new TemplateHandler());
 
         // Add Subrouter api
         Router apiRouter = Router.router(getVertx());
-        apiRouter.route()
+        apiRouter.get()
                 .path("/")
                 .handler(new ApiHandler());
         mainRouter.mountSubRouter("/api", apiRouter);
@@ -111,9 +111,11 @@ public class MainVerticle extends AbstractVerticle {
     /**
      * Check if this application has access to the necessary files
      * and resources it needs. Like keystore and webroot.
-     * @return true if valid
+     * @return Future (use Future.failed() to check if false)
      */
-    public boolean isValid() {
+    private Future<Void> isValid() {
+        Future<Void> future = Future.future();
+        
         boolean flag = true;
         String dir = System.getProperty("user.dir");
 
@@ -129,8 +131,14 @@ public class MainVerticle extends AbstractVerticle {
             logger.error("/webroot/ not found or can't read. Expected it here: " + dir);
             flag = false;
         }
+        
+        if(flag) {
+            future.complete();
+        } else {
+            future.fail("App invalid config.");
+        }
 
-        return flag;
+        return future;
     }
 
     @Override
