@@ -1,0 +1,41 @@
+# Create Deployment
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: vertx-starter
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: vertx-starter
+    spec:
+      containers:
+      - name: vertx-starter
+        image: amdelamar/vertx-starter
+        ports:
+        - containerPort: 9080
+        - containerPort: 9443
+      restartPolicy: Always
+---
+# Create Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: vertx-starter
+  labels:
+    component: vertx-starter
+    provider: amdelamar
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    protocol: TCP
+    port: 9080
+    nodePort: 30501
+  - name: https
+    protocol: TCP
+    port: 9443
+    nodePort: 30502
+  selector:
+    name: vertx-starter
