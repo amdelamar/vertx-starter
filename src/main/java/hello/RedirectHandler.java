@@ -1,7 +1,7 @@
 package hello;
 
 import io.vertx.core.Handler;
-import io.vertx.core.http.HttpServerRequest;
+import io.vertx.reactivex.core.http.HttpServerRequest;
 
 /**
  * Redirects HTTP calls to HTTPS with a 302 (Found) code and "Location" Header.

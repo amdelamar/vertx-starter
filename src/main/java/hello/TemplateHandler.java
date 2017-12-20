@@ -1,9 +1,9 @@
 package hello;
 
 import io.vertx.core.Handler;
-import io.vertx.ext.web.RoutingContext;
-import io.vertx.ext.web.templ.FreeMarkerTemplateEngine;
-import io.vertx.ext.web.templ.TemplateEngine;
+import io.vertx.reactivex.ext.web.RoutingContext;
+import io.vertx.reactivex.ext.web.templ.FreeMarkerTemplateEngine;
+import io.vertx.reactivex.ext.web.templ.TemplateEngine;
 
 public class TemplateHandler implements Handler<RoutingContext> {
 

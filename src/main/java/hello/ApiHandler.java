@@ -2,7 +2,7 @@ package hello;
 
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.RoutingContext;
+import io.vertx.reactivex.ext.web.RoutingContext;
 
 public class ApiHandler implements Handler<RoutingContext> {
 

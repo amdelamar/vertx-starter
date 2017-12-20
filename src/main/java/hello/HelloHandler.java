@@ -1,7 +1,7 @@
 package hello;
 
 import io.vertx.core.Handler;
-import io.vertx.ext.web.RoutingContext;
+import io.vertx.reactivex.ext.web.RoutingContext;
 
 public class HelloHandler implements Handler<RoutingContext> {
 
